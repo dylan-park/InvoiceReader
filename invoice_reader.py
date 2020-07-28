@@ -78,6 +78,23 @@ def get_access_token():
     print('New auth code set')
 
 
+# upload an image for use in FreshBooks post requests
+def upload_image():
+    with open('access_token.json', 'r') as file:
+        # check if current access token is expired
+        if (time.time() >= float(json.load(file)['expires'])):
+            get_access_token()
+        file.seek(0)
+        access_token = json.load(file)['access_token']
+    x = requests.post('https://api.freshbooks.com/uploads/account/' + credentials.get_account_id() + '/images',
+                      files={'test.jpg': open('INPUT/test.jpg', 'rb')},
+                      headers={"Api-Version": "alpha",
+                               "Content-Type": "application/json",
+                               "Authorization": "Bearer " + access_token},
+                      allow_redirects=True)
+    print(x.text)
+
+
 # add new expense to Catalyst Content FreshBooks account
 def add_expense(amount, date, vendor):
     # read access_token file to get most recent access token
@@ -85,6 +102,7 @@ def add_expense(amount, date, vendor):
         # check if current access token is expired
         if (time.time() >= float(json.load(file)['expires'])):
             get_access_token()
+        file.seek(0)
         access_token = json.load(file)['access_token']
         
     # url for post request   
