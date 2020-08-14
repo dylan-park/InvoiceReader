@@ -1,4 +1,4 @@
-import requests, helper_functions, json
+import helper_functions, requests, json
 
 
 # add new expense to Catalyst Content FreshBooks account
@@ -6,8 +6,8 @@ def add_expense(amount, date, vendor):
     access_token = helper_functions.check_access_token()
     # url for post request  
     image_object = helper_functions.upload_image()
-    with open('', 'r') as f:
-        credentials_json = json.load(f)
+    with open('credentials.json', 'r') as f:
+        credentials_json = json.loads(f.read())
     x = requests.post('https://api.freshbooks.com/accounting/account/' + credentials_json['account_id'] + '/expenses/expenses',
                       # JSON data to send
                       json={"expense": 

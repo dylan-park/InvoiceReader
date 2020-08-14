@@ -23,6 +23,7 @@ def append_error(filename):
 
 # checks if access token is still valid, gets new token if not
 def check_access_token():
+    # TODO: add check if access_token file does not exist to create it
     with open('access_token.json', 'r') as file:
         if (time.time() >= float(json.load(file)['expires'])):
             get_access_token()
@@ -32,8 +33,8 @@ def check_access_token():
 
 # gets a new access token (valid for 12 hours)
 def get_access_token():
-    with open('', 'r') as f:
-        credentials_json = json.load(f)
+    with open('credentials.json', 'r') as f:
+        credentials_json = json.loads(f.read())
     # opens web browser and prompt user to complete auth verification and to input the returned code
     webbrowser.open(credentials_json['auth_url'])
     code = input('Enter the auth code from URL: ')
@@ -58,8 +59,8 @@ def get_access_token():
 
 # upload an image for use in FreshBooks post requests
 def upload_image():
-    with open('', 'r') as f:
-        credentials_json = json.load(f)
+    with open('credentials.json', 'r') as f:
+        credentials_json = json.loads(f.read())
     access_token = check_access_token()
     x = requests.post('https://api.freshbooks.com/uploads/account/' + credentials_json['account_id'] + '/images',
                 data={},
