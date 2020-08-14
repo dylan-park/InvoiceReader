@@ -86,13 +86,11 @@ def upload_image():
             get_access_token()
         file.seek(0)
         access_token = json.load(file)['access_token']
-    x = requests.post('https://api.freshbooks.com/uploads/account/' + credentials.get_account_id() + '/images',
-                      files={'test.jpg': open('INPUT/test.jpg', 'rb')},
-                      headers={"Api-Version": "alpha",
-                               "Content-Type": "application/json",
-                               "Authorization": "Bearer " + access_token},
-                      allow_redirects=True)
-    print(x.text)
+        x = requests.post('https://api.freshbooks.com/uploads/account/' + credentials.get_account_id() + '/images',
+                    data={},
+                    files=[('content', open('INPUT/test.jpg', 'rb'))],
+                    headers={"Authorization": "Bearer " + access_token})
+        return (x.json()["image"])
 
 
 # add new expense to Catalyst Content FreshBooks account
@@ -105,7 +103,8 @@ def add_expense(amount, date, vendor):
         file.seek(0)
         access_token = json.load(file)['access_token']
         
-    # url for post request   
+    # url for post request  
+    image_object = upload_image()
     x = requests.post('https://api.freshbooks.com/accounting/account/' + credentials.get_account_id() + '/expenses/expenses',
                       # JSON data to send
                       json={"expense": 
@@ -113,7 +112,11 @@ def add_expense(amount, date, vendor):
                              "categoryid": credentials.get_categoryid(),
                              "staffid": credentials.get_staffid(),
                              "date": date,
-                             "vendor": vendor}},
+                             "vendor": vendor,
+                             "attachment":
+                            {"jwt": image_object["jwt"],
+                             "media_type": image_object["media_type"]
+                                }}},
                       # header to send with request
                       headers={"Api-Version": "alpha",
                                "Content-Type": "application/json",
