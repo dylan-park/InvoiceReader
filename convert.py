@@ -3,8 +3,7 @@ from invoice2data.extract.loader import read_templates
 from invoice2data.input import pdftotext as pdftotextdef
 from invoice2data.output import to_json
 from datetime import datetime
-import os, pdftotext, json
-import helper_functions
+import os, pdftotext, json, helper_functions
 
 
 # try to convert every file in the INPUT folder

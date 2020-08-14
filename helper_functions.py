@@ -1,5 +1,5 @@
 from datetime import timedelta
-import calendar, credentials, requests, json, webbrowser, time
+import calendar, requests, json, webbrowser, time
 
 
 # adds a month to any input date 
@@ -32,17 +32,19 @@ def check_access_token():
 
 # gets a new access token (valid for 12 hours)
 def get_access_token():
+    with open('', 'r') as f:
+        credentials_json = json.load(f)
     # opens web browser and prompt user to complete auth verification and to input the returned code
-    webbrowser.open(credentials.get_auth_url())
+    webbrowser.open(credentials_json['auth_url'])
     code = input('Enter the auth code from URL: ')
     # url for post request
     x = requests.post('https://api.freshbooks.com/auth/oauth/token',
                       # JSON data to send
                       json={"grant_type": "authorization_code",
-                    "client_secret": credentials.get_client_secret(),
+                    "client_secret": credentials_json['client_secret'],
                     "code": code,
-                    "client_id": credentials.get_client_id(),
-                    "redirect_uri": credentials.get_redirect_uri()},
+                    "client_id": credentials_json['client_id'],
+                    "redirect_uri": credentials_json['redirect_uri']},
                       # header to send with request
                       headers={"Api-Version": "alpha",
                                "Content-Type": "application/json"})
@@ -56,8 +58,10 @@ def get_access_token():
 
 # upload an image for use in FreshBooks post requests
 def upload_image():
+    with open('', 'r') as f:
+        credentials_json = json.load(f)
     access_token = check_access_token()
-    x = requests.post('https://api.freshbooks.com/uploads/account/' + credentials.get_account_id() + '/images',
+    x = requests.post('https://api.freshbooks.com/uploads/account/' + credentials_json['account_id'] + '/images',
                 data={},
                 files=[('content', open('INPUT/test.jpg', 'rb'))],
                 headers={"Authorization": "Bearer " + access_token})
