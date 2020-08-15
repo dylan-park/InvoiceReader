@@ -1,5 +1,5 @@
 from datetime import timedelta
-import calendar, requests, json, webbrowser, time
+import calendar, requests, json, webbrowser, time, os
 
 
 # adds a month to any input date 
@@ -23,7 +23,10 @@ def append_error(filename):
 
 # checks if access token is still valid, gets new token if not
 def check_access_token():
-    # TODO: add check if access_token file does not exist to create it
+    # if file does not exist make new access token
+    if not os.path.exists("access_token.json"):
+        get_access_token()
+    # if token is expired get new one
     with open('access_token.json', 'r') as file:
         if (time.time() >= float(json.load(file)['expires'])):
             get_access_token()
@@ -58,12 +61,12 @@ def get_access_token():
 
 
 # upload an image for use in FreshBooks post requests
-def upload_image():
+def upload_image(filename):
     with open('credentials.json', 'r') as f:
         credentials_json = json.loads(f.read())
     access_token = check_access_token()
-    x = requests.post('https://api.freshbooks.com/uploads/account/' + credentials_json['account_id'] + '/images',
+    x = requests.post('https://api.freshbooks.com/uploads/account/' + credentials_json['account_id'] + '/attachments',
                 data={},
-                files=[('content', open('INPUT/test.jpg', 'rb'))],
+                files=[('content', open('INPUT/' + filename + '.pdf', 'rb'))],
                 headers={"Authorization": "Bearer " + access_token})
-    return (x.json()["image"])
+    return (x.json()["attachment"])
