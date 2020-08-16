@@ -2,6 +2,27 @@ from datetime import timedelta
 import calendar, requests, json, webbrowser, time, os
 
 
+# creates all the required directories and files to run the program
+def create_environment():
+    if not os.path.exists('INPUT'):
+        os.makedirs('INPUT')
+    if not os.path.exists('OUTPUT'):
+        os.makedirs('OUTPUT')
+    if not os.path.exists('TEMPLATES'):
+        os.makedirs('TEMPLATES')
+    if not os.path.exists('credentials.json'):
+        with open('credentials.json', 'w') as f:
+            json.dump({
+                "account_id": "",
+                "client_id": "",
+                "client_secret": "",
+                "redirect_uri": "",
+                "auth_url": "",
+                "categoryid": 0,
+                "staffid": 0
+                }, f)
+
+
 # adds a month to any input date 
 def add_month(dt0):
     start_date = dt0
