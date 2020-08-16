@@ -18,6 +18,8 @@ def convert_all():
         else:
             continue
 
+# def convert_single():
+
 
 # reads a pdf file and parses the data to JSON
 def read_file(filename, debug):

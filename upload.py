@@ -17,6 +17,8 @@ def add_all():
         else:
             continue
 
+# def add_single(filepath):
+
 
 # add new expense to FreshBooks account
 def add_expense(filename, amount, date, vendor):
